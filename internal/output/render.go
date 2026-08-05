@@ -22,7 +22,7 @@ var (
 	greenColor  = color.New(color.FgGreen)
 	yellowColor = color.New(color.FgYellow)
 	redColor    = color.New(color.FgRed)
-	warnColor   = color.New(color.FgYellow)
+	warnColor   = yellowColor
 )
 
 func setNoColor(v bool) {
@@ -208,13 +208,16 @@ func renderGPU(s *collector.SystemSnapshot, opts Options) {
 
 func renderNetwork(s *collector.SystemSnapshot, opts Options) {
 	for _, iface := range s.Network {
-		if iface.Name == "Loopback Pseudo-Interface 1" {
-			if !opts.Verbose {
-				continue
-			}
+		isLoopback := strings.Contains(strings.ToLower(iface.Name), "loopback")
+		hasAddrs := len(iface.Addresses) > 0
+
+		// In non-verbose mode, skip loopback and interfaces with no addresses.
+		if !opts.Verbose && (isLoopback || !hasAddrs) {
+			continue
 		}
+
 		addrStr := "<no address>"
-		if len(iface.Addresses) > 0 {
+		if hasAddrs {
 			if opts.Basic {
 				addrStr = iface.Addresses[0]
 			} else {

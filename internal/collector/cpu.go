@@ -46,14 +46,25 @@ func CollectCPU() CPUInfo {
 		logicalCores = runtime.NumCPU()
 	}
 
+	// Run overall and per-core measurements concurrently (each blocks for 1s).
+	type usageResult struct {
+		overall []float64
+		perCore []float64
+	}
+	ch := make(chan usageResult, 1)
+	go func() {
+		var r usageResult
+		r.perCore, _ = cpu.Percent(1*time.Second, true)
+		ch <- r
+	}()
+
 	usage, _ := cpu.Percent(1*time.Second, false)
 	var usagePercent float64
 	if len(usage) > 0 {
 		usagePercent = usage[0]
 	}
 
-	var perCoreUsage []float64
-	perCoreUsage, _ = cpu.Percent(1*time.Second, true)
+	res := <-ch
 
 	temperature := collectCPUTemperature()
 
@@ -62,7 +73,7 @@ func CollectCPU() CPUInfo {
 		PhysicalCores: physicalCores,
 		LogicalCores:  logicalCores,
 		UsagePercent:  usagePercent,
-		PerCoreUsage:  perCoreUsage,
+		PerCoreUsage:  res.perCore,
 		Temperature:   temperature,
 	}
 }

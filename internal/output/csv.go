@@ -17,6 +17,10 @@ func RenderCSV(s *collector.SystemSnapshot) {
 	flatten(w, "", reflect.ValueOf(*s))
 
 	w.Flush()
+	if err := w.Error(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: CSV encoding failed: %v\n", err)
+		os.Exit(1)
+	}
 }
 
 func flatten(w *csv.Writer, prefix string, v reflect.Value) {

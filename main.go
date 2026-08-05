@@ -59,6 +59,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	if *basic && *verbose {
+		fmt.Fprintln(os.Stderr, "Error: --basic and --verbose are mutually exclusive")
+		os.Exit(1)
+	}
+
 	opts := output.Options{
 		Basic:    *basic,
 		Verbose:  *verbose,
@@ -103,17 +108,21 @@ func collectAll(static *collector.SystemSnapshot) *collector.SystemSnapshot {
 	}()
 
 	var wg sync.WaitGroup
-	wg.Add(4)
 
+	wg.Add(1)
 	go func() { defer wg.Done(); hostInfo = collector.CollectHost() }()
+	wg.Add(1)
 	go func() { defer wg.Done(); memoryInfo = collector.CollectMemory() }()
+	wg.Add(1)
 	go func() { defer wg.Done(); disks = collector.CollectDisks() }()
+	wg.Add(1)
 	go func() { defer wg.Done(); network = collector.CollectNetwork() }()
 
 	collectStatic := static == nil
 	if collectStatic {
-		wg.Add(2)
+		wg.Add(1)
 		go func() { defer wg.Done(); gpus = collector.CollectGPU() }()
+		wg.Add(1)
 		go func() { defer wg.Done(); bios = collector.CollectBIOS() }()
 	} else {
 		gpus = static.GPU
@@ -158,9 +167,6 @@ func runWatch(intervalSec int, opts output.Options) {
 			return
 		case <-ticker.C:
 			dynamic := collectAll(static)
-			dynamic.GPU = static.GPU
-			dynamic.BIOS = static.BIOS
-			dynamic.Network = static.Network
 			clearScreen()
 			output.RenderTerminal(dynamic, opts)
 		}

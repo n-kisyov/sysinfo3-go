@@ -1,6 +1,7 @@
 package output
 
 import (
+	"fmt"
 	"os"
 	"sysinfo3-go/internal/collector"
 
@@ -10,5 +11,8 @@ import (
 func RenderYAML(s *collector.SystemSnapshot) {
 	enc := yaml.NewEncoder(os.Stdout)
 	enc.SetIndent(2)
-	_ = enc.Encode(s)
+	if err := enc.Encode(s); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: YAML encoding failed: %v\n", err)
+		os.Exit(1)
+	}
 }

@@ -8,7 +8,7 @@ func CollectGPU() []GPUInfo {
 	type wmiGPU struct {
 		Name          string
 		DriverVersion string
-		AdapterRAM    *uint32
+		AdapterRAM    *uint64
 	}
 
 	var gpus []wmiGPU
@@ -22,7 +22,7 @@ func CollectGPU() []GPUInfo {
 		var vram uint64
 		var vramH string
 		if g.AdapterRAM != nil {
-			vram = uint64(*g.AdapterRAM)
+			vram = *g.AdapterRAM
 			vramH = FormatBytes(vram)
 		} else {
 			vramH = "<unknown>"

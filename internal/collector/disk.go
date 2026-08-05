@@ -40,7 +40,10 @@ func CollectDisks() []DiskInfo {
 			UsedPercent: usage.UsedPercent,
 		}
 
-		if len(physicalDisks) > 0 {
+		// Only attach physical info when there's exactly one physical disk,
+		// since we cannot reliably map partitions to physical disks without
+		// the full WMI association chain.
+		if len(physicalDisks) == 1 {
 			di.PhysicalModel = physicalDisks[0].Model
 			di.PhysicalType = physicalDisks[0].MediaType
 			if physicalDisks[0].Size > 0 {

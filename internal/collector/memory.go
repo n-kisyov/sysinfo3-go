@@ -10,9 +10,7 @@ func CollectMemory() MemoryInfo {
 		return MemoryInfo{}
 	}
 
-	swap, _ := mem.SwapMemory()
-
-	return MemoryInfo{
+	info := MemoryInfo{
 		Total:       vmem.Total,
 		TotalH:      FormatBytes(vmem.Total),
 		Used:        vmem.Used,
@@ -20,9 +18,15 @@ func CollectMemory() MemoryInfo {
 		Available:   vmem.Available,
 		AvailableH:  FormatBytes(vmem.Available),
 		UsedPercent: vmem.UsedPercent,
-		SwapTotal:   swap.Total,
-		SwapTotalH:  FormatBytes(swap.Total),
-		SwapUsed:    swap.Used,
-		SwapUsedH:   FormatBytes(swap.Used),
 	}
+
+	swap, err := mem.SwapMemory()
+	if err == nil && swap != nil {
+		info.SwapTotal = swap.Total
+		info.SwapTotalH = FormatBytes(swap.Total)
+		info.SwapUsed = swap.Used
+		info.SwapUsedH = FormatBytes(swap.Used)
+	}
+
+	return info
 }
