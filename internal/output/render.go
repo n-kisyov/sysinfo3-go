@@ -43,6 +43,7 @@ var sections = []section{
 	{"GPU", renderGPU},
 	{"Network", renderNetwork},
 	{"Battery", renderBattery},
+	{"Top Processes", renderProcesses},
 	{"BIOS", renderBIOS},
 }
 
@@ -254,6 +255,19 @@ func renderBattery(s *collector.SystemSnapshot, opts Options) {
 	fmt.Printf("%s %s\n", lb("Charge"), pctColor(float64(b.Percentage)).Sprintf("%d%%", b.Percentage))
 	if b.TimeLeft != "" {
 		fmt.Printf("%s %s\n", lb("Time Left"), valueColor.Sprint(b.TimeLeft))
+	}
+}
+
+func renderProcesses(s *collector.SystemSnapshot, opts Options) {
+	if len(s.Processes) == 0 {
+		fmt.Printf("%s %s\n", lb("Status"), warnColor.Sprint("<no process info>"))
+		return
+	}
+	
+	for i, p := range s.Processes {
+		label := fmt.Sprintf("#%d %s", i+1, p.Name)
+		details := valueColor.Sprintf("PID: %d | Mem: %s | CPU: %.1f%%", p.PID, p.MemoryH, p.CPUPercent)
+		fmt.Printf("%s %s\n", lb(label), details)
 	}
 }
 
