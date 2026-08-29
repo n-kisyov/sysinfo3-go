@@ -39,7 +39,14 @@ func flatten(w *csv.Writer, prefix string, v reflect.Value) {
 					w.Write([]string{"timestamp", fmt.Sprintf("%v", v.Field(i).Interface())})
 					continue
 				}
-				flatten(w, "", v.Field(i))
+				key := field.Tag.Get("json")
+				if key == "" || key == "-" {
+					key = strings.ToLower(field.Name)
+				}
+				keyParts := strings.Split(key, ",")
+				key = keyParts[0]
+
+				flatten(w, key, v.Field(i))
 			}
 			return
 		}
