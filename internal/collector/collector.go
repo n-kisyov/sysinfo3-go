@@ -13,6 +13,7 @@ type SystemSnapshot struct {
 	Disks     []DiskInfo    `json:"disks" yaml:"disks"`
 	PhysDisks []PhysicalDiskInfo `json:"physical_disks" yaml:"physical_disks"`
 	Network   []NetInterface `json:"network" yaml:"network"`
+	Battery   *BatteryInfo   `json:"battery,omitempty" yaml:"battery,omitempty"`
 	GPU       []GPUInfo     `json:"gpu" yaml:"gpu"`
 	BIOS      BIOSInfo      `json:"bios" yaml:"bios"`
 }
@@ -76,6 +77,12 @@ type NetInterface struct {
 	Addresses []string `json:"addresses" yaml:"addresses"`
 	MTU       int      `json:"mtu" yaml:"mtu"`
 	Flags     []string `json:"flags" yaml:"flags"`
+}
+
+type BatteryInfo struct {
+	Percentage int    `json:"percentage" yaml:"percentage"`
+	Status     string `json:"status" yaml:"status"`
+	TimeLeft   string `json:"time_left,omitempty" yaml:"time_left,omitempty"`
 }
 
 type GPUInfo struct {

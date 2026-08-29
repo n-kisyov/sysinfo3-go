@@ -42,6 +42,7 @@ var sections = []section{
 	{"Physical Disks", renderPhysDisks},
 	{"GPU", renderGPU},
 	{"Network", renderNetwork},
+	{"Battery", renderBattery},
 	{"BIOS", renderBIOS},
 }
 
@@ -240,6 +241,19 @@ func renderNetwork(s *collector.SystemSnapshot, opts Options) {
 			fmt.Printf("%s %s\n", lb("  MTU"), valueColor.Sprint(fmt.Sprintf("%d", iface.MTU)))
 			fmt.Printf("%s %s\n", lb("  Flags"), valueColor.Sprint(strings.Join(iface.Flags, ", ")))
 		}
+	}
+}
+
+func renderBattery(s *collector.SystemSnapshot, opts Options) {
+	if s.Battery == nil {
+		fmt.Printf("%s %s\n", lb("Status"), warnColor.Sprint("<no battery detected>"))
+		return
+	}
+	b := s.Battery
+	fmt.Printf("%s %s\n", lb("Status"), valueColor.Sprint(b.Status))
+	fmt.Printf("%s %s\n", lb("Charge"), pctColor(float64(b.Percentage)).Sprintf("%d%%", b.Percentage))
+	if b.TimeLeft != "" {
+		fmt.Printf("%s %s\n", lb("Time Left"), valueColor.Sprint(b.TimeLeft))
 	}
 }
 

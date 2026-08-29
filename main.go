@@ -100,6 +100,7 @@ func collectAll(static *collector.SystemSnapshot) *collector.SystemSnapshot {
 	var disks []collector.DiskInfo
 	var physDisks []collector.PhysicalDiskInfo
 	var network []collector.NetInterface
+	var battery *collector.BatteryInfo
 	var gpus []collector.GPUInfo
 	var bios collector.BIOSInfo
 
@@ -125,9 +126,12 @@ func collectAll(static *collector.SystemSnapshot) *collector.SystemSnapshot {
 		go func() { defer wg.Done(); gpus = collector.CollectGPU() }()
 		wg.Add(1)
 		go func() { defer wg.Done(); bios = collector.CollectBIOS() }()
+		wg.Add(1)
+		go func() { defer wg.Done(); battery = collector.CollectBattery() }()
 	} else {
 		gpus = static.GPU
 		bios = static.BIOS
+		battery = static.Battery
 	}
 
 	wg.Wait()
@@ -141,6 +145,7 @@ func collectAll(static *collector.SystemSnapshot) *collector.SystemSnapshot {
 		Disks:     disks,
 		PhysDisks: physDisks,
 		Network:   network,
+		Battery:   battery,
 		GPU:       gpus,
 		BIOS:      bios,
 	}
