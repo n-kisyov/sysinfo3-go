@@ -23,7 +23,11 @@ func CollectGPU() []GPUInfo {
 		var vramH string
 		if g.AdapterRAM != nil {
 			vram = *g.AdapterRAM
-			vramH = FormatBytes(vram)
+			if vram == 0xFFFFFFFFFFFFFFFF || vram >= 0xFFF00000 {
+				vramH = "> 4 GB"
+			} else {
+				vramH = FormatBytes(vram)
+			}
 		} else {
 			vramH = "<unknown>"
 		}
