@@ -30,21 +30,22 @@ func setNoColor(v bool) {
 }
 
 type section struct {
-	name   string
-	render func(*collector.SystemSnapshot, Options)
+	name      string
+	filterKey string // alias used by --category; falls back to lowercase name
+	render    func(*collector.SystemSnapshot, Options)
 }
 
 var sections = []section{
-	{"System", renderHost},
-	{"Memory", renderMemory},
-	{"CPU", renderCPU},
-	{"Disks (Volumes)", renderDisks},
-	{"Physical Disks", renderPhysDisks},
-	{"GPU", renderGPU},
-	{"Network", renderNetwork},
-	{"Battery", renderBattery},
-	{"Top Processes", renderProcesses},
-	{"BIOS", renderBIOS},
+	{"System", "system", renderHost},
+	{"Memory", "memory", renderMemory},
+	{"CPU", "cpu", renderCPU},
+	{"Disks (Volumes)", "disks", renderDisks},
+	{"Physical Disks", "physical disks", renderPhysDisks},
+	{"GPU", "gpu", renderGPU},
+	{"Network", "network", renderNetwork},
+	{"Battery", "battery", renderBattery},
+	{"Top Processes", "processes", renderProcesses},
+	{"BIOS", "bios", renderBIOS},
 }
 
 func RenderTerminal(s *collector.SystemSnapshot, opts Options) {
@@ -58,7 +59,11 @@ func RenderTerminal(s *collector.SystemSnapshot, opts Options) {
 	}
 
 	for _, sec := range sections {
-		if len(filter) > 0 && !filter[strings.ToLower(sec.name)] {
+		key := sec.filterKey
+		if key == "" {
+			key = strings.ToLower(sec.name)
+		}
+		if len(filter) > 0 && !filter[key] {
 			continue
 		}
 		printSectionHeader(sec.name)
@@ -82,9 +87,7 @@ func lb(key string) string {
 	return labelColor.Sprintf("  %-16s", key)
 }
 
-func pctStr(pct float64) string {
-	return fmt.Sprintf("%.1f%%", pct)
-}
+
 
 func pctColor(pct float64) *color.Color {
 	switch {
