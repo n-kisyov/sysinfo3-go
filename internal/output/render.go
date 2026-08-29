@@ -186,7 +186,6 @@ func renderDisks(s *collector.SystemSnapshot, opts Options) {
 			printBar(d.UsedPercent)
 		}
 
-		}
 	}
 }
 
