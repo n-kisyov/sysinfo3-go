@@ -120,6 +120,10 @@ func collectAll(static *collector.SystemSnapshot) *collector.SystemSnapshot {
 	go func() { defer wg.Done(); disks, physDisks = collector.CollectDisks() }()
 	wg.Add(1)
 	go func() { defer wg.Done(); network = collector.CollectNetwork() }()
+	wg.Add(1)
+	go func() { defer wg.Done(); battery = collector.CollectBattery() }()
+	wg.Add(1)
+	go func() { defer wg.Done(); processes = collector.CollectProcesses() }()
 
 	collectStatic := static == nil
 	if collectStatic {
@@ -127,15 +131,9 @@ func collectAll(static *collector.SystemSnapshot) *collector.SystemSnapshot {
 		go func() { defer wg.Done(); gpus = collector.CollectGPU() }()
 		wg.Add(1)
 		go func() { defer wg.Done(); bios = collector.CollectBIOS() }()
-		wg.Add(1)
-		go func() { defer wg.Done(); battery = collector.CollectBattery() }()
-		wg.Add(1)
-		go func() { defer wg.Done(); processes = collector.CollectProcesses() }()
 	} else {
 		gpus = static.GPU
 		bios = static.BIOS
-		battery = static.Battery
-		processes = static.Processes
 	}
 
 	wg.Wait()
