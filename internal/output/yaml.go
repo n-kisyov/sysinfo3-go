@@ -10,6 +10,7 @@ import (
 
 func RenderYAML(s *collector.SystemSnapshot) {
 	enc := yaml.NewEncoder(os.Stdout)
+	defer enc.Close()
 	enc.SetIndent(2)
 	if err := enc.Encode(s); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: YAML encoding failed: %v\n", err)
