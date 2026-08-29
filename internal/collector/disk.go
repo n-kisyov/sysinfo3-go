@@ -1,14 +1,16 @@
 package collector
 
 import (
+	"strings"
+
 	"github.com/StackExchange/wmi"
 	"github.com/shirou/gopsutil/v3/disk"
 )
 
 type wmiPhysicalDisk struct {
-	Model  string
+	Model     string
 	MediaType string
-	Size   uint64
+	Size      uint64
 }
 
 func CollectDisks() ([]DiskInfo, []PhysicalDiskInfo) {
@@ -22,9 +24,13 @@ func CollectDisks() ([]DiskInfo, []PhysicalDiskInfo) {
 
 	var physResult []PhysicalDiskInfo
 	for _, p := range physicalDisks {
+		mediaType := strings.TrimSpace(p.MediaType)
+		if mediaType == "" {
+			mediaType = "Unknown"
+		}
 		physResult = append(physResult, PhysicalDiskInfo{
-			Model: p.Model,
-			Type:  p.MediaType,
+			Model: strings.TrimSpace(p.Model),
+			Type:  mediaType,
 			Size:  p.Size,
 			SizeH: FormatBytes(p.Size),
 		})
