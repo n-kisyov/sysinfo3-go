@@ -38,7 +38,8 @@ var sections = []section{
 	{"System", renderHost},
 	{"Memory", renderMemory},
 	{"CPU", renderCPU},
-	{"Disks", renderDisks},
+	{"Disks (Volumes)", renderDisks},
+	{"Physical Disks", renderPhysDisks},
 	{"GPU", renderGPU},
 	{"Network", renderNetwork},
 	{"BIOS", renderBIOS},
@@ -183,10 +184,19 @@ func renderDisks(s *collector.SystemSnapshot, opts Options) {
 			printBar(d.UsedPercent)
 		}
 
-		if opts.Verbose && d.PhysicalModel != "" {
-			phys := valueColor.Sprintf("%s [%s] %s", d.PhysicalModel, d.PhysicalType, d.PhysicalSizeH)
-			fmt.Printf("%s %s\n", lb("  Physical"), phys)
 		}
+	}
+}
+
+func renderPhysDisks(s *collector.SystemSnapshot, opts Options) {
+	if len(s.PhysDisks) == 0 {
+		fmt.Printf("%s %s\n", lb("Status"), warnColor.Sprint("<no physical disks detected>"))
+		return
+	}
+	for i, d := range s.PhysDisks {
+		label := fmt.Sprintf("Disk %d", i)
+		details := valueColor.Sprintf("%s [%s] %s", d.Model, d.Type, d.SizeH)
+		fmt.Printf("%s %s\n", lb(label), details)
 	}
 }
 

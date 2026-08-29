@@ -11,6 +11,7 @@ type SystemSnapshot struct {
 	Memory    MemoryInfo    `json:"memory" yaml:"memory"`
 	CPU       CPUInfo       `json:"cpu" yaml:"cpu"`
 	Disks     []DiskInfo    `json:"disks" yaml:"disks"`
+	PhysDisks []PhysicalDiskInfo `json:"physical_disks" yaml:"physical_disks"`
 	Network   []NetInterface `json:"network" yaml:"network"`
 	GPU       []GPUInfo     `json:"gpu" yaml:"gpu"`
 	BIOS      BIOSInfo      `json:"bios" yaml:"bios"`
@@ -60,9 +61,13 @@ type DiskInfo struct {
 	Free          uint64  `json:"free_bytes" yaml:"free_bytes"`
 	FreeH         string  `json:"free" yaml:"free"`
 	UsedPercent   float64 `json:"used_percent" yaml:"used_percent"`
-	PhysicalModel string  `json:"physical_model,omitempty" yaml:"physical_model,omitempty"`
-	PhysicalType  string  `json:"physical_type,omitempty" yaml:"physical_type,omitempty"`
-	PhysicalSizeH string  `json:"physical_size,omitempty" yaml:"physical_size,omitempty"`
+}
+
+type PhysicalDiskInfo struct {
+	Model string `json:"model" yaml:"model"`
+	Type  string `json:"type" yaml:"type"`
+	Size  uint64 `json:"size_bytes" yaml:"size_bytes"`
+	SizeH string `json:"size" yaml:"size"`
 }
 
 type NetInterface struct {

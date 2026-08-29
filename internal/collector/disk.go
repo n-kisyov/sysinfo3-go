@@ -11,14 +11,24 @@ type wmiPhysicalDisk struct {
 	Size   uint64
 }
 
-func CollectDisks() []DiskInfo {
+func CollectDisks() ([]DiskInfo, []PhysicalDiskInfo) {
 	partitions, err := disk.Partitions(false)
 	if err != nil {
-		return nil
+		return nil, nil
 	}
 
 	var physicalDisks []wmiPhysicalDisk
 	wmi.Query("SELECT Model, MediaType, Size FROM Win32_DiskDrive", &physicalDisks)
+
+	var physResult []PhysicalDiskInfo
+	for _, p := range physicalDisks {
+		physResult = append(physResult, PhysicalDiskInfo{
+			Model: p.Model,
+			Type:  p.MediaType,
+			Size:  p.Size,
+			SizeH: FormatBytes(p.Size),
+		})
+	}
 
 	var result []DiskInfo
 	for _, p := range partitions {
@@ -40,19 +50,8 @@ func CollectDisks() []DiskInfo {
 			UsedPercent: usage.UsedPercent,
 		}
 
-		// Only attach physical info when there's exactly one physical disk,
-		// since we cannot reliably map partitions to physical disks without
-		// the full WMI association chain.
-		if len(physicalDisks) == 1 {
-			di.PhysicalModel = physicalDisks[0].Model
-			di.PhysicalType = physicalDisks[0].MediaType
-			if physicalDisks[0].Size > 0 {
-				di.PhysicalSizeH = FormatBytes(physicalDisks[0].Size)
-			}
-		}
-
 		result = append(result, di)
 	}
 
-	return result
+	return result, physResult
 }
