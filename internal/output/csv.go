@@ -25,6 +25,9 @@ func RenderCSV(s *collector.SystemSnapshot) {
 
 func flatten(w *csv.Writer, prefix string, v reflect.Value) {
 	if v.Kind() == reflect.Ptr {
+		if v.IsNil() {
+			return
+		}
 		v = v.Elem()
 	}
 
