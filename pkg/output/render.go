@@ -3,7 +3,7 @@ package output
 import (
 	"fmt"
 	"strings"
-	"sysinfo3-go/internal/collector"
+	"sysinfo3-go/pkg/collector"
 
 	"github.com/fatih/color"
 )

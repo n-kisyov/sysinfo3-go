@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-	"sysinfo3-go/internal/collector"
+	"sysinfo3-go/pkg/collector"
 	"time"
 )
 

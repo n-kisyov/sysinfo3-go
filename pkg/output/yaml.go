@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sysinfo3-go/internal/collector"
+	"sysinfo3-go/pkg/collector"
 
 	"gopkg.in/yaml.v3"
 )

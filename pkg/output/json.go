@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sysinfo3-go/internal/collector"
+	"sysinfo3-go/pkg/collector"
 )
 
 func RenderJSON(s *collector.SystemSnapshot, w io.Writer) {

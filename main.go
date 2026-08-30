@@ -8,8 +8,8 @@ import (
 	"os/signal"
 	"time"
 
-	"sysinfo3-go/internal/collector"
-	"sysinfo3-go/internal/output"
+	"sysinfo3-go/pkg/collector"
+	"sysinfo3-go/pkg/output"
 )
 
 func main() {
