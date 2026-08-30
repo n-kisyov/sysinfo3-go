@@ -26,6 +26,9 @@ func CollectMemory() MemoryInfo {
 		info.SwapTotalH = FormatBytes(swap.Total)
 		info.SwapUsed = swap.Used
 		info.SwapUsedH = FormatBytes(swap.Used)
+		if swap.Total > 0 {
+			info.SwapUsedPercent = float64(swap.Used) / float64(swap.Total) * 100.0
+		}
 	}
 
 	return info
