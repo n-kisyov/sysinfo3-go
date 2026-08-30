@@ -144,7 +144,12 @@ func renderMemory(s *collector.SystemSnapshot, opts Options) {
 
 	if (!opts.Basic && m.SwapTotal > 0) || opts.Verbose {
 		fmt.Printf("%s %s\n", lb("Swap Total"), valueColor.Sprint(m.SwapTotalH))
-		fmt.Printf("%s %s\n", lb("Swap Used"), valueColor.Sprint(m.SwapUsedH))
+		fmt.Printf("%s %s\n", lb("Swap Used"), pctColor(m.SwapUsedPercent).Sprintf("%s (%.1f%%)", m.SwapUsedH, m.SwapUsedPercent))
+		if opts.Verbose {
+			fmt.Print(lb("Swap Bar"))
+			fmt.Println()
+			printBar(m.SwapUsedPercent)
+		}
 	}
 }
 
