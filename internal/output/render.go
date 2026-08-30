@@ -243,6 +243,8 @@ func renderNetwork(s *collector.SystemSnapshot, opts Options) {
 			fmt.Printf("%s %s\n", lb("  MAC"), valueColor.Sprint(iface.MAC))
 			fmt.Printf("%s %s\n", lb("  MTU"), valueColor.Sprint(fmt.Sprintf("%d", iface.MTU)))
 			fmt.Printf("%s %s\n", lb("  Flags"), valueColor.Sprint(strings.Join(iface.Flags, ", ")))
+			fmt.Printf("%s %s\n", lb("  Sent"), valueColor.Sprint(iface.BytesSentH))
+			fmt.Printf("%s %s\n", lb("  Received"), valueColor.Sprint(iface.BytesRecvH))
 		}
 	}
 }
