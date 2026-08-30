@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"sync"
 	"time"
 
 	"github.com/shirou/gopsutil/v3/net"
@@ -9,6 +10,7 @@ import (
 var (
 	lastNetworkCounters map[string]net.IOCountersStat
 	lastNetworkTime     time.Time
+	networkMu           sync.Mutex
 )
 
 func CollectNetwork() []NetInterface {
@@ -25,6 +27,9 @@ func CollectNetwork() []NetInterface {
 			ioMap[c.Name] = c
 		}
 	}
+
+	networkMu.Lock()
+	defer networkMu.Unlock()
 
 	var result []NetInterface
 	now := time.Now()

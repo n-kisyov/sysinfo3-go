@@ -2,6 +2,7 @@ package collector
 
 import (
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/StackExchange/wmi"
@@ -18,6 +19,7 @@ type wmiPhysicalDisk struct {
 var (
 	lastDiskCounters map[string]disk.IOCountersStat
 	lastDiskTime     time.Time
+	diskMu           sync.Mutex
 )
 
 func CollectDisks() ([]DiskInfo, []PhysicalDiskInfo) {
@@ -28,6 +30,9 @@ func CollectDisks() ([]DiskInfo, []PhysicalDiskInfo) {
 
 	var physicalDisks []wmiPhysicalDisk
 	wmi.Query("SELECT Name, Model, MediaType, Size FROM Win32_DiskDrive", &physicalDisks)
+
+	diskMu.Lock()
+	defer diskMu.Unlock()
 
 	now := time.Now()
 	var timeDiffSec float64
