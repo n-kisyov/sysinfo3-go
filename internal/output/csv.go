@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"sysinfo3-go/internal/collector"
+	"time"
 )
 
 func RenderCSV(s *collector.SystemSnapshot) {
@@ -39,7 +40,11 @@ func flatten(w *csv.Writer, prefix string, v reflect.Value) {
 			for i := 0; i < v.NumField(); i++ {
 				field := t.Field(i)
 				if field.Name == "Timestamp" {
-					w.Write([]string{"timestamp", fmt.Sprintf("%v", v.Field(i).Interface())})
+					if ts, ok := v.Field(i).Interface().(time.Time); ok {
+						w.Write([]string{"timestamp", ts.Format(time.RFC3339)})
+					} else {
+						w.Write([]string{"timestamp", fmt.Sprintf("%v", v.Field(i).Interface())})
+					}
 					continue
 				}
 				key := field.Tag.Get("json")
