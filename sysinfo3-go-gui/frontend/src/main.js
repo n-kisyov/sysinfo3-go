@@ -32,6 +32,15 @@ async function updateData() {
             ${renderRow('Uptime', snap.host.uptime)}
         `;
 
+        // BIOS
+        document.getElementById('bios-content').innerHTML = `
+            ${renderRow('Vendor', snap.bios.vendor)}
+            ${renderRow('Version', snap.bios.version)}
+            ${renderRow('Date', snap.bios.date)}
+            ${renderRow('Manufacturer', snap.bios.manufacturer)}
+            ${renderRow('Model', snap.bios.model)}
+        `;
+
         // CPU
         document.getElementById('cpu-content').innerHTML = `
             ${renderRow('Model', snap.cpu.model)}
@@ -55,9 +64,9 @@ async function updateData() {
         if (snap.battery) {
             document.getElementById('battery-content').innerHTML = `
                 ${renderRow('Status', snap.battery.status)}
-                ${renderRow('Charge', `${snap.battery.percent}%`)}
-                ${renderProgress(snap.battery.percent)}
-                ${renderRow('Runtime', snap.battery.runtime)}
+                ${renderRow('Charge', `${snap.battery.percentage}%`)}
+                ${renderProgress(snap.battery.percentage)}
+                ${renderRow('Runtime', snap.battery.time_left)}
             `;
         } else {
             document.getElementById('battery-content').innerHTML = 'No battery detected.';
@@ -79,6 +88,20 @@ async function updateData() {
             </div>
         `).join('');
 
+        // Physical Disks
+        document.getElementById('phys-disks-content').innerHTML = `
+            <table>
+                <tr><th>Model</th><th>Type</th><th>Size</th></tr>
+                ${snap.phys_disks.map(d => `
+                    <tr>
+                        <td>${d.model}</td>
+                        <td>${d.type}</td>
+                        <td>${d.size}</td>
+                    </tr>
+                `).join('')}
+            </table>
+        `;
+
         // Disks
         document.getElementById('disks-content').innerHTML = `
             <table>
@@ -86,7 +109,7 @@ async function updateData() {
                 ${snap.disks.map(d => `
                     <tr>
                         <td>${d.mount_point}</td>
-                        <td>${d.fstype}</td>
+                        <td>${d.fs_type}</td>
                         <td style="width:100px;">
                             <div style="font-size:0.8rem;text-align:right;">${d.used_percent.toFixed(1)}%</div>
                             ${renderProgress(d.used_percent)}
