@@ -2,6 +2,7 @@ package collector
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -142,4 +143,65 @@ func FormatUptime(seconds uint64) string {
 		return fmt.Sprintf("%dh %dm", hours, minutes)
 	}
 	return fmt.Sprintf("%dm", minutes)
+}
+
+func CollectAll(static *SystemSnapshot) *SystemSnapshot {
+	var hostInfo HostInfo
+	var memoryInfo MemoryInfo
+	var cpuInfo CPUInfo
+	var disks []DiskInfo
+	var physDisks []PhysicalDiskInfo
+	var network []NetInterface
+	var battery *BatteryInfo
+	var processes []ProcessInfo
+	var gpus []GPUInfo
+	var bios BIOSInfo
+
+	cpuCh := make(chan CPUInfo, 1)
+	go func() {
+		cpuCh <- CollectCPU()
+	}()
+
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go func() { defer wg.Done(); hostInfo = CollectHost() }()
+	wg.Add(1)
+	go func() { defer wg.Done(); memoryInfo = CollectMemory() }()
+	wg.Add(1)
+	go func() { defer wg.Done(); disks, physDisks = CollectDisks() }()
+	wg.Add(1)
+	go func() { defer wg.Done(); network = CollectNetwork() }()
+	wg.Add(1)
+	go func() { defer wg.Done(); battery = CollectBattery() }()
+	wg.Add(1)
+	go func() { defer wg.Done(); processes = CollectProcesses() }()
+
+	collectStatic := static == nil
+	if collectStatic {
+		wg.Add(1)
+		go func() { defer wg.Done(); gpus = CollectGPU() }()
+		wg.Add(1)
+		go func() { defer wg.Done(); bios = CollectBIOS() }()
+	} else {
+		gpus = static.GPU
+		bios = static.BIOS
+	}
+
+	wg.Wait()
+	cpuInfo = <-cpuCh
+
+	return &SystemSnapshot{
+		Timestamp: time.Now(),
+		Host:      hostInfo,
+		Memory:    memoryInfo,
+		CPU:       cpuInfo,
+		Disks:     disks,
+		PhysDisks: physDisks,
+		Network:   network,
+		Battery:   battery,
+		Processes: processes,
+		GPU:       gpus,
+		BIOS:      bios,
+	}
 }

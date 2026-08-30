@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"os/signal"
-	"sync"
 	"time"
 
 	"sysinfo3-go/internal/collector"
@@ -88,7 +87,7 @@ func main() {
 
 	switch {
 	case *jsonOut:
-		snap := collectAll(nil)
+		snap := collector.CollectAll(nil)
 		w := getWriter(*outputFile)
 		if f, ok := w.(*os.File); ok && f != os.Stdout {
 			defer f.Close()
@@ -96,7 +95,7 @@ func main() {
 		output.RenderJSON(snap, w)
 		return
 	case *csvOut:
-		snap := collectAll(nil)
+		snap := collector.CollectAll(nil)
 		w := getWriter(*outputFile)
 		if f, ok := w.(*os.File); ok && f != os.Stdout {
 			defer f.Close()
@@ -104,7 +103,7 @@ func main() {
 		output.RenderCSV(snap, w)
 		return
 	case *yamlOut:
-		snap := collectAll(nil)
+		snap := collector.CollectAll(nil)
 		w := getWriter(*outputFile)
 		if f, ok := w.(*os.File); ok && f != os.Stdout {
 			defer f.Close()
@@ -115,71 +114,11 @@ func main() {
 		runWatch(*interval, opts)
 		return
 	default:
-		snap := collectAll(nil)
+		snap := collector.CollectAll(nil)
 		output.RenderTerminal(snap, opts)
 	}
 }
 
-func collectAll(static *collector.SystemSnapshot) *collector.SystemSnapshot {
-	var hostInfo collector.HostInfo
-	var memoryInfo collector.MemoryInfo
-	var cpuInfo collector.CPUInfo
-	var disks []collector.DiskInfo
-	var physDisks []collector.PhysicalDiskInfo
-	var network []collector.NetInterface
-	var battery *collector.BatteryInfo
-	var processes []collector.ProcessInfo
-	var gpus []collector.GPUInfo
-	var bios collector.BIOSInfo
-
-	cpuCh := make(chan collector.CPUInfo, 1)
-	go func() {
-		cpuCh <- collector.CollectCPU()
-	}()
-
-	var wg sync.WaitGroup
-
-	wg.Add(1)
-	go func() { defer wg.Done(); hostInfo = collector.CollectHost() }()
-	wg.Add(1)
-	go func() { defer wg.Done(); memoryInfo = collector.CollectMemory() }()
-	wg.Add(1)
-	go func() { defer wg.Done(); disks, physDisks = collector.CollectDisks() }()
-	wg.Add(1)
-	go func() { defer wg.Done(); network = collector.CollectNetwork() }()
-	wg.Add(1)
-	go func() { defer wg.Done(); battery = collector.CollectBattery() }()
-	wg.Add(1)
-	go func() { defer wg.Done(); processes = collector.CollectProcesses() }()
-
-	collectStatic := static == nil
-	if collectStatic {
-		wg.Add(1)
-		go func() { defer wg.Done(); gpus = collector.CollectGPU() }()
-		wg.Add(1)
-		go func() { defer wg.Done(); bios = collector.CollectBIOS() }()
-	} else {
-		gpus = static.GPU
-		bios = static.BIOS
-	}
-
-	wg.Wait()
-	cpuInfo = <-cpuCh
-
-	return &collector.SystemSnapshot{
-		Timestamp: time.Now(),
-		Host:      hostInfo,
-		Memory:    memoryInfo,
-		CPU:       cpuInfo,
-		Disks:     disks,
-		PhysDisks: physDisks,
-		Network:   network,
-		Battery:   battery,
-		Processes: processes,
-		GPU:       gpus,
-		BIOS:      bios,
-	}
-}
 
 func runWatch(intervalSec int, opts output.Options) {
 	if intervalSec < 1 {
@@ -189,7 +128,7 @@ func runWatch(intervalSec int, opts output.Options) {
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, os.Interrupt)
 
-	static := collectAll(nil)
+	static := collector.CollectAll(nil)
 	clearScreen()
 	output.RenderTerminal(static, opts)
 
@@ -203,7 +142,7 @@ func runWatch(intervalSec int, opts output.Options) {
 			fmt.Println()
 			return
 		case <-ticker.C:
-			dynamic := collectAll(static)
+			dynamic := collector.CollectAll(static)
 			clearScreen()
 			output.RenderTerminal(dynamic, opts)
 		}
