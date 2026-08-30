@@ -22,6 +22,8 @@ func main() {
 	interval := flag.Int("interval", 2, "Refresh interval in seconds (with --watch)")
 	noColor := flag.Bool("no-color", false, "Disable ANSI color output")
 	category := flag.String("category", "", "Show only specified categories (comma-separated)")
+	outputFile := flag.String("output", "", "Write structured output to file (use with --json/--csv/--yaml)")
+	topN := flag.Int("top", 5, "Number of top processes to display")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "sysinfo3-go — Windows system information tool\n\n")
@@ -34,7 +36,9 @@ func main() {
 		fmt.Fprintf(os.Stderr, "  sysinfo3-go --verbose              All details\n")
 		fmt.Fprintf(os.Stderr, "  sysinfo3-go --watch --interval 3   Live refresh every 3s\n")
 		fmt.Fprintf(os.Stderr, "  sysinfo3-go --json                 JSON output\n")
+		fmt.Fprintf(os.Stderr, "  sysinfo3-go --json --output sys.json  Save to file\n")
 		fmt.Fprintf(os.Stderr, "  sysinfo3-go --category cpu,memory  Only CPU and Memory\n")
+		fmt.Fprintf(os.Stderr, "  sysinfo3-go --top 10               Show top 10 processes\n")
 	}
 
 	flag.Parse()
@@ -64,6 +68,16 @@ func main() {
 		os.Exit(1)
 	}
 
+	if *outputFile != "" && structCount == 0 {
+		fmt.Fprintln(os.Stderr, "Error: --output requires --json, --csv, or --yaml")
+		os.Exit(1)
+	}
+
+	if *topN < 1 {
+		*topN = 1
+	}
+	collector.TopN = *topN
+
 	opts := output.Options{
 		Basic:    *basic,
 		Verbose:  *verbose,
@@ -74,15 +88,27 @@ func main() {
 	switch {
 	case *jsonOut:
 		snap := collectAll(nil)
-		output.RenderJSON(snap)
+		w := getWriter(*outputFile)
+		if f, ok := w.(*os.File); ok && f != os.Stdout {
+			defer f.Close()
+		}
+		output.RenderJSON(snap, w)
 		return
 	case *csvOut:
 		snap := collectAll(nil)
-		output.RenderCSV(snap)
+		w := getWriter(*outputFile)
+		if f, ok := w.(*os.File); ok && f != os.Stdout {
+			defer f.Close()
+		}
+		output.RenderCSV(snap, w)
 		return
 	case *yamlOut:
 		snap := collectAll(nil)
-		output.RenderYAML(snap)
+		w := getWriter(*outputFile)
+		if f, ok := w.(*os.File); ok && f != os.Stdout {
+			defer f.Close()
+		}
+		output.RenderYAML(snap, w)
 		return
 	case *watch:
 		runWatch(*interval, opts)
