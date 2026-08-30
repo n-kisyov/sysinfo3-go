@@ -39,8 +39,9 @@ type MemoryInfo struct {
 	UsedPercent float64 `json:"used_percent" yaml:"used_percent"`
 	SwapTotal   uint64  `json:"swap_total_bytes" yaml:"swap_total_bytes"`
 	SwapTotalH  string  `json:"swap_total" yaml:"swap_total"`
-	SwapUsed    uint64  `json:"swap_used_bytes" yaml:"swap_used_bytes"`
-	SwapUsedH   string  `json:"swap_used" yaml:"swap_used"`
+	SwapUsed        uint64  `json:"swap_used_bytes" yaml:"swap_used_bytes"`
+	SwapUsedH       string  `json:"swap_used" yaml:"swap_used"`
+	SwapUsedPercent float64 `json:"swap_used_percent" yaml:"swap_used_percent"`
 }
 
 type CPUInfo struct {
