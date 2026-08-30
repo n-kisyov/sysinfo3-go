@@ -3,6 +3,7 @@ package output
 import (
 	"encoding/csv"
 	"fmt"
+	"io"
 	"os"
 	"reflect"
 	"strconv"
@@ -11,14 +12,14 @@ import (
 	"time"
 )
 
-func RenderCSV(s *collector.SystemSnapshot) {
-	w := csv.NewWriter(os.Stdout)
-	w.Write([]string{"key", "value"})
+func RenderCSV(s *collector.SystemSnapshot, w io.Writer) {
+	cw := csv.NewWriter(w)
+	cw.Write([]string{"key", "value"})
 
-	flatten(w, "", reflect.ValueOf(*s))
+	flatten(cw, "", reflect.ValueOf(*s))
 
-	w.Flush()
-	if err := w.Error(); err != nil {
+	cw.Flush()
+	if err := cw.Error(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: CSV encoding failed: %v\n", err)
 		os.Exit(1)
 	}
