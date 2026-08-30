@@ -73,11 +73,15 @@ type PhysicalDiskInfo struct {
 }
 
 type NetInterface struct {
-	Name      string   `json:"name" yaml:"name"`
-	MAC       string   `json:"mac" yaml:"mac"`
-	Addresses []string `json:"addresses" yaml:"addresses"`
-	MTU       int      `json:"mtu" yaml:"mtu"`
-	Flags     []string `json:"flags" yaml:"flags"`
+	Name       string   `json:"name" yaml:"name"`
+	MAC        string   `json:"mac" yaml:"mac"`
+	Addresses  []string `json:"addresses" yaml:"addresses"`
+	MTU        int      `json:"mtu" yaml:"mtu"`
+	Flags      []string `json:"flags" yaml:"flags"`
+	BytesSent  uint64   `json:"bytes_sent" yaml:"bytes_sent"`
+	BytesRecv  uint64   `json:"bytes_recv" yaml:"bytes_recv"`
+	BytesSentH string   `json:"bytes_sent_h" yaml:"bytes_sent_h"`
+	BytesRecvH string   `json:"bytes_recv_h" yaml:"bytes_recv_h"`
 }
 
 type BatteryInfo struct {
