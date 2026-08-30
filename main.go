@@ -18,11 +18,12 @@ func main() {
 	jsonOut := flag.Bool("json", false, "Output as JSON")
 	csvOut := flag.Bool("csv", false, "Output as CSV")
 	yamlOut := flag.Bool("yaml", false, "Output as YAML")
+	htmlOut := flag.Bool("html", false, "Output as HTML")
 	watch := flag.Bool("watch", false, "Continuously refresh system info")
 	interval := flag.Int("interval", 2, "Refresh interval in seconds (with --watch)")
 	noColor := flag.Bool("no-color", false, "Disable ANSI color output")
 	category := flag.String("category", "", "Show only specified categories (comma-separated)")
-	outputFile := flag.String("output", "", "Write structured output to file (use with --json/--csv/--yaml)")
+	outputFile := flag.String("output", "", "Write structured output to file (use with --json/--csv/--yaml/--html)")
 	topN := flag.Int("top", 5, "Number of top processes to display")
 
 	flag.Usage = func() {
@@ -37,6 +38,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "  sysinfo3-go --watch --interval 3   Live refresh every 3s\n")
 		fmt.Fprintf(os.Stderr, "  sysinfo3-go --json                 JSON output\n")
 		fmt.Fprintf(os.Stderr, "  sysinfo3-go --json --output sys.json  Save to file\n")
+		fmt.Fprintf(os.Stderr, "  sysinfo3-go --html --output sys.html  Export HTML report\n")
 		fmt.Fprintf(os.Stderr, "  sysinfo3-go --category cpu,memory  Only CPU and Memory\n")
 		fmt.Fprintf(os.Stderr, "  sysinfo3-go --top 10               Show top 10 processes\n")
 	}
@@ -53,8 +55,11 @@ func main() {
 	if *yamlOut {
 		structCount++
 	}
+	if *htmlOut {
+		structCount++
+	}
 	if structCount > 1 {
-		fmt.Fprintln(os.Stderr, "Error: --json, --csv, and --yaml are mutually exclusive")
+		fmt.Fprintln(os.Stderr, "Error: --json, --csv, --yaml, and --html are mutually exclusive")
 		os.Exit(1)
 	}
 
@@ -69,7 +74,7 @@ func main() {
 	}
 
 	if *outputFile != "" && structCount == 0 {
-		fmt.Fprintln(os.Stderr, "Error: --output requires --json, --csv, or --yaml")
+		fmt.Fprintln(os.Stderr, "Error: --output requires --json, --csv, --yaml, or --html")
 		os.Exit(1)
 	}
 
@@ -109,6 +114,14 @@ func main() {
 			defer f.Close()
 		}
 		output.RenderYAML(snap, w)
+		return
+	case *htmlOut:
+		snap := collector.CollectAll(nil)
+		w := getWriter(*outputFile)
+		if f, ok := w.(*os.File); ok && f != os.Stdout {
+			defer f.Close()
+		}
+		output.RenderHTML(snap, w)
 		return
 	case *watch:
 		runWatch(*interval, opts)

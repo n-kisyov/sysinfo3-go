@@ -68,10 +68,19 @@ type DiskInfo struct {
 }
 
 type PhysicalDiskInfo struct {
-	Model string `json:"model" yaml:"model"`
-	Type  string `json:"type" yaml:"type"`
-	Size  uint64 `json:"size_bytes" yaml:"size_bytes"`
-	SizeH string `json:"size" yaml:"size"`
+	Name             string `json:"name" yaml:"name"`
+	Model            string `json:"model" yaml:"model"`
+	Type             string `json:"type" yaml:"type"`
+	Size             uint64 `json:"size_bytes" yaml:"size_bytes"`
+	SizeH            string `json:"size" yaml:"size"`
+	ReadBytes        uint64 `json:"read_bytes" yaml:"read_bytes"`
+	WriteBytes       uint64 `json:"write_bytes" yaml:"write_bytes"`
+	ReadBytesH       string `json:"read_bytes_h" yaml:"read_bytes_h"`
+	WriteBytesH      string `json:"write_bytes_h" yaml:"write_bytes_h"`
+	ReadBytesPerSec  uint64 `json:"read_bytes_per_sec" yaml:"read_bytes_per_sec"`
+	WriteBytesPerSec uint64 `json:"write_bytes_per_sec" yaml:"write_bytes_per_sec"`
+	ReadBytesPerSecH string `json:"read_bytes_per_sec_h" yaml:"read_bytes_per_sec_h"`
+	WriteBytesPerSecH string `json:"write_bytes_per_sec_h" yaml:"write_bytes_per_sec_h"`
 }
 
 type NetInterface struct {
@@ -80,10 +89,14 @@ type NetInterface struct {
 	Addresses  []string `json:"addresses" yaml:"addresses"`
 	MTU        int      `json:"mtu" yaml:"mtu"`
 	Flags      []string `json:"flags" yaml:"flags"`
-	BytesSent  uint64   `json:"bytes_sent" yaml:"bytes_sent"`
-	BytesRecv  uint64   `json:"bytes_recv" yaml:"bytes_recv"`
-	BytesSentH string   `json:"bytes_sent_h" yaml:"bytes_sent_h"`
-	BytesRecvH string   `json:"bytes_recv_h" yaml:"bytes_recv_h"`
+	BytesSent        uint64   `json:"bytes_sent" yaml:"bytes_sent"`
+	BytesRecv        uint64   `json:"bytes_recv" yaml:"bytes_recv"`
+	BytesSentH       string   `json:"bytes_sent_h" yaml:"bytes_sent_h"`
+	BytesRecvH       string   `json:"bytes_recv_h" yaml:"bytes_recv_h"`
+	BytesSentPerSec  uint64   `json:"bytes_sent_per_sec" yaml:"bytes_sent_per_sec"`
+	BytesRecvPerSec  uint64   `json:"bytes_recv_per_sec" yaml:"bytes_recv_per_sec"`
+	BytesSentPerSecH string   `json:"bytes_sent_per_sec_h" yaml:"bytes_sent_per_sec_h"`
+	BytesRecvPerSecH string   `json:"bytes_recv_per_sec_h" yaml:"bytes_recv_per_sec_h"`
 }
 
 type BatteryInfo struct {

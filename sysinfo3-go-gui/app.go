@@ -2,7 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"sysinfo3-go/pkg/collector"
+
+	"github.com/shirou/gopsutil/v3/process"
 )
 
 // App struct
@@ -26,4 +29,13 @@ func (a *App) startup(ctx context.Context) {
 // GetSystemSnapshot returns the current system snapshot.
 func (a *App) GetSystemSnapshot() *collector.SystemSnapshot {
 	return collector.CollectAll(a.staticSnap)
+}
+
+// KillProcess attempts to terminate a process by its PID.
+func (a *App) KillProcess(pid int32) error {
+	p, err := process.NewProcess(pid)
+	if err != nil {
+		return fmt.Errorf("failed to find process: %v", err)
+	}
+	return p.Kill()
 }

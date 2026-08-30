@@ -5,3 +5,7 @@
 export function GetSystemSnapshot() {
   return window['go']['main']['App']['GetSystemSnapshot']();
 }
+
+export function KillProcess(arg1) {
+  return window['go']['main']['App']['KillProcess'](arg1);
+}

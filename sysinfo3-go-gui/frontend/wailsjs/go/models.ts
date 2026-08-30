@@ -176,6 +176,10 @@ export namespace collector {
 	    bytes_recv: number;
 	    bytes_sent_h: string;
 	    bytes_recv_h: string;
+	    bytes_sent_per_sec: number;
+	    bytes_recv_per_sec: number;
+	    bytes_sent_per_sec_h: string;
+	    bytes_recv_per_sec_h: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new NetInterface(source);
@@ -192,13 +196,26 @@ export namespace collector {
 	        this.bytes_recv = source["bytes_recv"];
 	        this.bytes_sent_h = source["bytes_sent_h"];
 	        this.bytes_recv_h = source["bytes_recv_h"];
+	        this.bytes_sent_per_sec = source["bytes_sent_per_sec"];
+	        this.bytes_recv_per_sec = source["bytes_recv_per_sec"];
+	        this.bytes_sent_per_sec_h = source["bytes_sent_per_sec_h"];
+	        this.bytes_recv_per_sec_h = source["bytes_recv_per_sec_h"];
 	    }
 	}
 	export class PhysicalDiskInfo {
+	    name: string;
 	    model: string;
 	    type: string;
 	    size_bytes: number;
 	    size: string;
+	    read_bytes: number;
+	    write_bytes: number;
+	    read_bytes_h: string;
+	    write_bytes_h: string;
+	    read_bytes_per_sec: number;
+	    write_bytes_per_sec: number;
+	    read_bytes_per_sec_h: string;
+	    write_bytes_per_sec_h: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new PhysicalDiskInfo(source);
@@ -206,10 +223,19 @@ export namespace collector {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
 	        this.model = source["model"];
 	        this.type = source["type"];
 	        this.size_bytes = source["size_bytes"];
 	        this.size = source["size"];
+	        this.read_bytes = source["read_bytes"];
+	        this.write_bytes = source["write_bytes"];
+	        this.read_bytes_h = source["read_bytes_h"];
+	        this.write_bytes_h = source["write_bytes_h"];
+	        this.read_bytes_per_sec = source["read_bytes_per_sec"];
+	        this.write_bytes_per_sec = source["write_bytes_per_sec"];
+	        this.read_bytes_per_sec_h = source["read_bytes_per_sec_h"];
+	        this.write_bytes_per_sec_h = source["write_bytes_per_sec_h"];
 	    }
 	}
 	export class ProcessInfo {

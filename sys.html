@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>System Snapshot - HH88</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background-color: #0f111a; color: #f3f4f6; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { color: #8b5cf6; text-align: center; }
+        h2 { color: #06b6d4; border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 30px; }
+        .card { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #333; }
+        th { color: #9ca3af; text-transform: uppercase; font-size: 0.85em; }
+        .row { display: flex; justify-content: space-between; padding: 4px 0; }
+        .row .label { color: #9ca3af; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sysinfo3 Report</h1>
+        <p style="text-align: center; color: #9ca3af;">Generated at: 2026-08-31 00:26:40</p>
+
+        <div class="card">
+            <h2>System Overview</h2>
+            <div class="row"><span class="label">Hostname</span><span>HH88</span></div>
+            <div class="row"><span class="label">OS</span><span>Microsoft Windows 11 Enterprise (Microsoft Windows 11 Enterprise)</span></div>
+            <div class="row"><span class="label">Uptime</span><span>2d 2h 24m</span></div>
+            <div class="row"><span class="label">CPU</span><span>AMD Ryzen 7 5700X 8-Core Processor              (8 Cores)</span></div>
+            <div class="row"><span class="label">Memory</span><span>31.93 GB</span></div>
+        </div>
+
+        <div class="card">
+            <h2>Network Interfaces</h2>
+            <table>
+                <tr><th>Name</th><th>Sent</th><th>Received</th></tr>
+                
+                <tr>
+                    <td>NordLynx</td>
+                    <td>0 B</td>
+                    <td>0 B</td>
+                </tr>
+                
+                <tr>
+                    <td>OpenVPN Wintun</td>
+                    <td>0 B</td>
+                    <td>0 B</td>
+                </tr>
+                
+                <tr>
+                    <td>vEthernet (vSwitch01)</td>
+                    <td>29.20 GB</td>
+                    <td>73.75 GB</td>
+                </tr>
+                
+                <tr>
+                    <td>Local Area Connection</td>
+                    <td>0 B</td>
+                    <td>0 B</td>
+                </tr>
+                
+                <tr>
+                    <td>OpenVPN Data Channel Offload for NordVPN</td>
+                    <td>0 B</td>
+                    <td>0 B</td>
+                </tr>
+                
+                <tr>
+                    <td>Local Area Connection 3</td>
+                    <td>0 B</td>
+                    <td>0 B</td>
+                </tr>
+                
+                <tr>
+                    <td>Loopback Pseudo-Interface 1</td>
+                    <td>0 B</td>
+                    <td>0 B</td>
+                </tr>
+                
+                <tr>
+                    <td>vEthernet (Default Switch)</td>
+                    <td>4.09 MB</td>
+                    <td>0 B</td>
+                </tr>
+                
+                <tr>
+                    <td>vEthernet (WSL (Hyper-V firewall))</td>
+                    <td>3.08 MB</td>
+                    <td>68.55 KB</td>
+                </tr>
+                
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Disks (Volumes)</h2>
+            <table>
+                <tr><th>Mount</th><th>FS</th><th>Usage</th><th>Total</th></tr>
+                
+                <tr>
+                    <td>C:</td>
+                    <td>NTFS</td>
+                    <td>93.8%</td>
+                    <td>930.54 GB</td>
+                </tr>
+                
+                <tr>
+                    <td>D:</td>
+                    <td>NTFS</td>
+                    <td>71.3%</td>
+                    <td>3.64 TB</td>
+                </tr>
+                
+                <tr>
+                    <td>E:</td>
+                    <td>NTFS</td>
+                    <td>91.4%</td>
+                    <td>3.64 TB</td>
+                </tr>
+                
+                <tr>
+                    <td>F:</td>
+                    <td>NTFS</td>
+                    <td>67.7%</td>
+                    <td>953.85 GB</td>
+                </tr>
+                
+                <tr>
+                    <td>G:</td>
+                    <td>NTFS</td>
+                    <td>31.3%</td>
+                    <td>3.64 TB</td>
+                </tr>
+                
+                <tr>
+                    <td>Y:</td>
+                    <td>NTFS</td>
+                    <td>68.2%</td>
+                    <td>3.48 TB</td>
+                </tr>
+                
+                <tr>
+                    <td>Z:</td>
+                    <td>NTFS</td>
+                    <td>68.2%</td>
+                    <td>3.48 TB</td>
+                </tr>
+                
+            </table>
+        </div>
+        
+        <div class="card">
+            <h2>Top Processes</h2>
+            <table>
+                <tr><th>PID</th><th>Name</th><th>CPU %</th><th>Memory</th></tr>
+                
+                <tr>
+                    <td>30148</td>
+                    <td>opencode.exe</td>
+                    <td>13.0%</td>
+                    <td>746.76 MB</td>
+                </tr>
+                
+                <tr>
+                    <td>23180</td>
+                    <td>TaskBarHero.exe</td>
+                    <td>30.8%</td>
+                    <td>547.80 MB</td>
+                </tr>
+                
+                <tr>
+                    <td>32436</td>
+                    <td>brave.exe</td>
+                    <td>12.6%</td>
+                    <td>465.27 MB</td>
+                </tr>
+                
+                <tr>
+                    <td>31992</td>
+                    <td>Antigravity IDE.exe</td>
+                    <td>9.7%</td>
+                    <td>425.46 MB</td>
+                </tr>
+                
+                <tr>
+                    <td>8552</td>
+                    <td>steamwebhelper.exe</td>
+                    <td>0.4%</td>
+                    <td>423.35 MB</td>
+                </tr>
+                
+            </table>
+        </div>
+    </div>
+</body>
+</html>

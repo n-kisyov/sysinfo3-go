@@ -3,3 +3,5 @@
 import {collector} from '../models';
 
 export function GetSystemSnapshot():Promise<collector.SystemSnapshot>;
+
+export function KillProcess(arg1:number):Promise<void>;

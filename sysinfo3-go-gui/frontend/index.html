@@ -6,76 +6,107 @@
     <title>sysinfo3-go</title>
     <!-- Use a modern Google Font (Outfit) -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div id="app">
         <!-- Sidebar Navigation (Optional, or just a header) -->
         <header class="app-header">
             <h1>Sysinfo<span>3</span></h1>
-            <div id="last-updated">Updating...</div>
-        </header>
-        
-        <main class="dashboard grid">
             
-            <!-- Host Info -->
-            <section class="card glass">
-                <h2>System</h2>
-                <div class="card-content" id="host-content">Loading...</div>
-            </section>
+            <div class="header-controls">
+                <div class="theme-switch" id="theme-toggle">
+                    <span class="icon">🌓</span>
+                </div>
+                <div id="last-updated">Updating...</div>
+            </div>
+        </header>
 
-            <!-- BIOS Info -->
-            <section class="card glass">
-                <h2>BIOS</h2>
-                <div class="card-content" id="bios-content">Loading...</div>
-            </section>
+        <nav class="tabs glass">
+            <button class="tab-btn active" data-target="tab-overview">Overview</button>
+            <button class="tab-btn" data-target="tab-hardware">Hardware</button>
+            <button class="tab-btn" data-target="tab-storage">Storage & Net</button>
+            <button class="tab-btn" data-target="tab-processes">Processes</button>
+        </nav>
+        
+        <main class="dashboard-content">
+            
+            <!-- Overview Tab -->
+            <div class="tab-pane active" id="tab-overview">
+                <div class="grid">
+                    <section class="card glass">
+                        <h2>System</h2>
+                        <div class="card-content" id="host-content">Loading...</div>
+                    </section>
+                    <section class="card glass">
+                        <h2>Battery</h2>
+                        <div class="card-content" id="battery-content">Loading...</div>
+                    </section>
+                </div>
+                
+                <div class="charts-grid grid">
+                    <section class="card glass">
+                        <h2>CPU History</h2>
+                        <div class="chart-container">
+                            <canvas id="cpuChart"></canvas>
+                        </div>
+                    </section>
+                    <section class="card glass">
+                        <h2>Memory History</h2>
+                        <div class="chart-container">
+                            <canvas id="memChart"></canvas>
+                        </div>
+                    </section>
+                </div>
+            </div>
 
-            <!-- CPU Info -->
-            <section class="card glass">
-                <h2>CPU</h2>
-                <div class="card-content" id="cpu-content">Loading...</div>
-            </section>
+            <!-- Hardware Tab -->
+            <div class="tab-pane" id="tab-hardware">
+                <div class="grid">
+                    <section class="card glass">
+                        <h2>BIOS</h2>
+                        <div class="card-content" id="bios-content">Loading...</div>
+                    </section>
+                    <section class="card glass">
+                        <h2>CPU Details</h2>
+                        <div class="card-content" id="cpu-content">Loading...</div>
+                    </section>
+                    <section class="card glass">
+                        <h2>Memory Details</h2>
+                        <div class="card-content" id="memory-content">Loading...</div>
+                    </section>
+                    <section class="card glass">
+                        <h2>GPU</h2>
+                        <div class="card-content" id="gpu-content">Loading...</div>
+                    </section>
+                </div>
+            </div>
 
-            <!-- Memory Info -->
-            <section class="card glass">
-                <h2>Memory</h2>
-                <div class="card-content" id="memory-content">Loading...</div>
-            </section>
+            <!-- Storage & Network Tab -->
+            <div class="tab-pane" id="tab-storage">
+                <div class="grid" style="grid-template-columns: 1fr;">
+                    <section class="card glass">
+                        <h2>Network</h2>
+                        <div class="card-content" id="network-content">Loading...</div>
+                    </section>
+                    <section class="card glass">
+                        <h2>Disks (Volumes)</h2>
+                        <div class="card-content" id="disks-content">Loading...</div>
+                    </section>
+                    <section class="card glass">
+                        <h2>Physical Disks</h2>
+                        <div class="card-content" id="phys-disks-content">Loading...</div>
+                    </section>
+                </div>
+            </div>
 
-            <!-- Battery & Power -->
-            <section class="card glass">
-                <h2>Battery</h2>
-                <div class="card-content" id="battery-content">Loading...</div>
-            </section>
-
-            <!-- GPU Info -->
-            <section class="card glass">
-                <h2>GPU</h2>
-                <div class="card-content" id="gpu-content">Loading...</div>
-            </section>
-
-            <!-- Network -->
-            <section class="card glass">
-                <h2>Network</h2>
-                <div class="card-content" id="network-content">Loading...</div>
-            </section>
-
-            <!-- Physical Disks -->
-            <section class="card glass" style="grid-column: 1 / -1;">
-                <h2>Physical Disks</h2>
-                <div class="card-content" id="phys-disks-content">Loading...</div>
-            </section>
-
-            <!-- Disks (Volumes) -->
-            <section class="card glass" style="grid-column: 1 / -1;">
-                <h2>Disks (Volumes)</h2>
-                <div class="card-content" id="disks-content">Loading...</div>
-            </section>
-
-            <!-- Top Processes -->
-            <section class="card glass" style="grid-column: 1 / -1;">
-                <h2>Top Processes</h2>
-                <div class="card-content" id="processes-content">Loading...</div>
-            </section>
+            <!-- Processes Tab -->
+            <div class="tab-pane" id="tab-processes">
+                <section class="card glass process-card">
+                    <h2>Top Processes</h2>
+                    <div class="card-content" id="processes-content">Loading...</div>
+                </section>
+            </div>
 
         </main>
     </div>

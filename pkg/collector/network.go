@@ -1,7 +1,14 @@
 package collector
 
 import (
+	"time"
+
 	"github.com/shirou/gopsutil/v3/net"
+)
+
+var (
+	lastNetworkCounters map[string]net.IOCountersStat
+	lastNetworkTime     time.Time
 )
 
 func CollectNetwork() []NetInterface {
@@ -20,6 +27,12 @@ func CollectNetwork() []NetInterface {
 	}
 
 	var result []NetInterface
+	now := time.Now()
+	var timeDiffSec float64
+	if !lastNetworkTime.IsZero() {
+		timeDiffSec = now.Sub(lastNetworkTime).Seconds()
+	}
+
 	for _, iface := range ifaces {
 		addrs := make([]string, len(iface.Addrs))
 		for i, a := range iface.Addrs {
@@ -39,9 +52,24 @@ func CollectNetwork() []NetInterface {
 			ni.BytesRecv = io.BytesRecv
 			ni.BytesSentH = FormatBytes(io.BytesSent)
 			ni.BytesRecvH = FormatBytes(io.BytesRecv)
+
+			if timeDiffSec > 0 && lastNetworkCounters != nil {
+				if last, ok := lastNetworkCounters[iface.Name]; ok {
+					sentDiff := io.BytesSent - last.BytesSent
+					recvDiff := io.BytesRecv - last.BytesRecv
+					ni.BytesSentPerSec = uint64(float64(sentDiff) / timeDiffSec)
+					ni.BytesRecvPerSec = uint64(float64(recvDiff) / timeDiffSec)
+					ni.BytesSentPerSecH = FormatBytes(ni.BytesSentPerSec) + "/s"
+					ni.BytesRecvPerSecH = FormatBytes(ni.BytesRecvPerSec) + "/s"
+				}
+			}
 		}
 
 		result = append(result, ni)
 	}
+
+	lastNetworkCounters = ioMap
+	lastNetworkTime = now
+
 	return result
 }
