@@ -10,6 +10,15 @@ func CollectNetwork() []NetInterface {
 		return nil
 	}
 
+	// Build a map of I/O counters keyed by interface name.
+	ioMap := make(map[string]net.IOCountersStat)
+	counters, err := net.IOCounters(true) // true = per-interface
+	if err == nil {
+		for _, c := range counters {
+			ioMap[c.Name] = c
+		}
+	}
+
 	var result []NetInterface
 	for _, iface := range ifaces {
 		addrs := make([]string, len(iface.Addrs))
@@ -17,13 +26,22 @@ func CollectNetwork() []NetInterface {
 			addrs[i] = a.Addr
 		}
 
-		result = append(result, NetInterface{
+		ni := NetInterface{
 			Name:      iface.Name,
 			MAC:       iface.HardwareAddr,
 			Addresses: addrs,
 			MTU:       iface.MTU,
 			Flags:     iface.Flags,
-		})
+		}
+
+		if io, ok := ioMap[iface.Name]; ok {
+			ni.BytesSent = io.BytesSent
+			ni.BytesRecv = io.BytesRecv
+			ni.BytesSentH = FormatBytes(io.BytesSent)
+			ni.BytesRecvH = FormatBytes(io.BytesRecv)
+		}
+
+		result = append(result, ni)
 	}
 	return result
 }
