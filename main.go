@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"os/signal"
 	"sync"
@@ -212,4 +213,16 @@ func runWatch(intervalSec int, opts output.Options) {
 func clearScreen() {
 	fmt.Print("\033[H\033[2J")
 	fmt.Print("\033[?25l")
+}
+
+func getWriter(outputFile string) io.Writer {
+	if outputFile == "" {
+		return os.Stdout
+	}
+	f, err := os.Create(outputFile)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating output file: %v\n", err)
+		os.Exit(1)
+	}
+	return f
 }

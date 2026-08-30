@@ -6,6 +6,8 @@ import (
 	"github.com/shirou/gopsutil/v3/process"
 )
 
+var TopN = 5
+
 func CollectProcesses() []ProcessInfo {
 	procs, err := process.Processes()
 	if err != nil {
@@ -43,7 +45,7 @@ func CollectProcesses() []ProcessInfo {
 		return results[i].MemoryBytes > results[j].MemoryBytes
 	})
 
-	limit := 5
+	limit := TopN
 	if len(results) < limit {
 		limit = len(results)
 	}
